@@ -26,18 +26,33 @@
      (= 1 (distance word1 candidate)))
    (words-of-size (count word1))))
 
-(defn candidate-neighbors [word1 word2]
-  "Neighbors that share a letter with the last word"
-  (filter
+(defn sufficient-neighbor [word1 word2]
+  "Neighbor that is closer to word2"
+  (first (filter
    (fn [candidate]
      (< (distance word1 candidate) (distance word2 candidate)))
-   (neighbors word1)))
+   (neighbors word1))))
 
-(candidate-neighbors "head" "tell")
+(sufficient-neighbor "head" "tell")
 
 (neighbors "heal")
 
 (neighbors "head")
 
-(defn doublets [word1 word2]
-  "make me work")
+(defn doublets [& words]
+  (let [word1 (second (reverse words))
+        word2 (last words)]
+  (cond
+   (= (distance (first words) (second words)) 1)
+   words
+   (= 0 (sufficient-neighbor word1 word2))
+   '()
+   :else
+   '(:foo)
+   )))
+
+(doublets "head" "heal")
+(def words ["head" "teal"])
+
+
+(doublets "foooz" "baaaz")
