@@ -30,7 +30,7 @@
   "Neighbor that is closer to word2"
   (first (filter
    (fn [candidate]
-     (<= (distance word1 candidate) (distance word2 candidate)))
+     (>= (distance word1 candidate) (distance word2 candidate)))
    (neighbors word1))))
 
 (defn doublets [& doublet]
@@ -38,17 +38,23 @@
         word1 (last head)
         word2 (last doublet)]
   (cond
-   (= (distance word1 word2) <= 1)
+   (= (distance word1 word2) 1)
    doublet
    (= 0 (sufficient-neighbor word1 word2))
-   doublet
+   '()
    :else
-    (flatten (cons head
-              (list (sufficient-neighbor word1 word2) word2))))))
+    (apply doublets (flatten (cons head
+              (list (sufficient-neighbor word1 word2) word2)))))))
 
 (doublets "head" "tell")
+(sufficient-neighbor "heal" "tell")
 
-(doublets "tell" "heal")
+(doublets "door" "lock")
+
+
+(take ((comp dec count) [:a :b :c]) [:a :b :c])
+
+(doublets "head" "heal")
 (def test-words ["head" "teal"])
 (cons (take 1 test-words)
       (cons (sufficient-neighbor (first test-words) (second test-words)) (rest test-words)))
