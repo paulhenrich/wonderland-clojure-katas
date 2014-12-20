@@ -38,10 +38,10 @@
         word1 (last head)
         word2 (last doublet)]
   (cond
-   (= (distance word1 word2) 1)
+   (= (distance word1 word2) <= 1)
    doublet
    (= 0 (sufficient-neighbor word1 word2))
-   '()
+   doublet
    :else
     (flatten (cons head
               (list (sufficient-neighbor word1 word2) word2))))))
