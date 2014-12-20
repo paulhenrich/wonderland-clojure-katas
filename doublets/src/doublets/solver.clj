@@ -25,8 +25,3 @@
    words))
 
 (neighbors "heal" "feel")
-
-(def letter1 [:a :b :c])
-(def letter2 [:a :b :d])
-
-

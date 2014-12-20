@@ -3,6 +3,9 @@
             [doublets.solver :refer :all]))
 
 (deftest solver-test
+  (testing "distance"
+    (is (= 1 (distance "heal" "teal"))))
+
   (testing "with word links found"
     (is (= ["head" "heal" "teal" "tell" "tall" "tail"]
            (doublets "head" "tail")))
