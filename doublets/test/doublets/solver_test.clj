@@ -11,16 +11,16 @@
     (is (= ["head" "heal" "teal" "tell" "tall" "tail"]
            (doublets "head" "tail")))
 
-    #_(is (= ["door" "boor" "book" "look" "lock"]
+    (is (= ["door" "boor" "book" "look" "lock"]
            (doublets "door" "lock")))
 
-    #_(is (= ["bank" "bonk" "book" "look" "loon" "loan"]
+    (is (= ["bank" "bonk" "book" "look" "loon" "loan"]
            (doublets "bank" "loan")))
 
-    #_(is (= ["wheat" "cheat" "cheap" "cheep" "creep" "creed" "breed" "bread"]
+    (is (= ["wheat" "cheat" "cheap" "cheep" "creep" "creed" "breed" "bread"]
            (doublets "wheat" "bread"))))
 
-  #_(testing "with no word links found"
+  (testing "with no word links found"
     (is (= []
            (doublets "ye" "freezer"))))
   )
