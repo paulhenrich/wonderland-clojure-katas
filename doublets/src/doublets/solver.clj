@@ -19,30 +19,33 @@
                   (second letter-pair)))
           (partition 2 (interleave word1 word2)))))
 
-(defn ^:dynamic sufficient-neighbors [word1 word2]
+(defn ^:dynamic sufficient-neighbors [doublet]
   "Neighbors that is closer to word2"
-  (filter
-   (fn [candidate]
-     (and
-      (> (distance word1 word2) (distance word2 candidate))
-      (= 1 (distance word1 candidate))
-      (not= word1 candidate)))
-     (words-of-size (count word1))))
+  (let [head  (take ((comp dec count) doublet) doublet)
+        word1 (last head)
+        word2 (last doublet)]
+   (filter
+    (fn [candidate]
+      (and
+       (>= (distance word1 word2) (distance word2 candidate))
+       (= 1 (distance word1 candidate))
+       (not (some #{candidate} head))))
+      (words-of-size (count word1)))))
 
-(defn doublets [& doublet]
+(defn ^:dynamic doublets [& doublet]
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
         word2 (last doublet)]
   (cond
    (= (distance word1 word2) 1)
    doublet
-   (= 0 (count (sufficient-neighbors word1 word2)))
+   (= 0 (count (sufficient-neighbors doublet)))
    '()
    :else
     (apply doublets (flatten (cons head
-              (list (first (sufficient-neighbors word1 word2)) word2)))))))
+              (list (first (sufficient-neighbors doublet)) word2)))))))
 
-(doublets "head" "tall")
-(doublets "tall" "tail")
-(doublets "door" "lock")
+(clojure.tools.trace/dotrace [doublets] (doublets "head" "tall"))
+(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "door" "lock"))
+
 
