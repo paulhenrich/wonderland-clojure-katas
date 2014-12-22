@@ -19,35 +19,29 @@
                   (second letter-pair)))
           (partition 2 (interleave word1 word2)))))
 
-
-(defn neighbors [word1]
-  "A neighbor is a word with a distance of one"
+(defn ^:dynamic sufficient-neighbors [word1 word2]
+  "Neighbors that is closer to word2"
   (filter
    (fn [candidate]
-     (= 1 (distance word1 candidate)))
-   (words-of-size (count word1))))
+     (and
+      (> (distance word1 word2) (distance word2 candidate))
+      (= 1 (distance word1 candidate))
+      (not= word1 candidate)))
+     (words-of-size (count word1))))
 
-(defn ^:dynamic sufficient-neighbor [word1 word2]
-  "Neighbor that is closer to word2"
-  (first (filter
-   (fn [candidate]
-     (> (distance word1 word2) (distance word2 candidate)))
-   (neighbors word1))))
-
-(defn ^:dynamic doublets-seq [& doublet]
+#_(defn ^:dynamic doublets-seq [& doublet]
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
         word2 (last doublet)]
     (cond
      (some #{word2} (neighbors word1))
-     (conj head word2)
-     (= nil (sufficient-neighbor word1 word2))
-     nil
+     "yay"
      :else
-     (apply doublets-seq (conj head (sufficient-neighbor word1 word2))))))
+     (flatten (cons head
+              (list ((first (sufficient-neighbors word1 word2))) word2))))))
 
-(clojure.tools.trace/dotrace [doublets-seq
-                              sufficient-neighbor] (doublets-seq "head" "tail"))
+#_(clojure.tools.trace/dotrace [doublets-seq
+                              sufficient-neighbors] (doublets-seq "head" "tail"))
 (defn doublets [& doublet]
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
@@ -59,11 +53,11 @@
    '()
    :else
     (apply doublets (flatten (cons head
-              (list (sufficient-neighbor word1 word2) word2)))))))
+              (list (first (sufficient-neighbors word1 word2)) word2)))))))
 
 (doublets "head" "tall")
 (doublets "tall" "tail")
-(sufficient-neighbor "tell" "tail")
+(sufficient-neighbors "tell" "tail")
 (doublets "door" "lock")
 (some #{"foo"} ["foo" "baz"])
 (sufficient-neighbor "aaaaaa" "bbbbbbb")
