@@ -48,4 +48,4 @@
 (clojure.tools.trace/dotrace [doublets] (doublets "head" "tall"))
 (clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "door" "lock"))
 
-
+(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "wheat" "bread"))
