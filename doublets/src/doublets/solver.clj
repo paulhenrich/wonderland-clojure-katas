@@ -27,7 +27,7 @@
    (filter
     (fn [candidate]
       (and
-       (>= (distance word1 word2) (distance word2 candidate))
+       ;(>= (distance word1 word2) (distance word2 candidate))
        (= 1 (distance word1 candidate))
        (not (some #{candidate} head))))
       (words-of-size (count word1)))))
