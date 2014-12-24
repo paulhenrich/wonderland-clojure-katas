@@ -1,7 +1,6 @@
 (ns doublets.solver
   (:require [clojure.java.io :as io]
-            [clojure.edn :as edn]
-            [clojure.tools.trace]))
+            [clojure.edn :as edn]))
 
 (def words (-> "words.edn"
                (io/resource)
@@ -19,12 +18,12 @@
                   (second letter-pair)))
           (partition 2 (interleave word1 word2)))))
 
-(defn ^:dynamic distance-from [target]
+(defn distance-from [target]
+  "Makes comparators that sort by distance from target"
   (comparator (fn [word1 word2]
                  (< (distance target word1) (distance target word2)))))
 
-
-(defn ^:dynamic sufficient-neighbors [doublet]
+(defn sufficient-neighbors [doublet]
   "Neighbors ordered by closeness to word2"
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
@@ -36,7 +35,7 @@
        (not (some #{candidate} head))))
       (words-of-size (count word1))))))
 
-(defn ^:dynamic doublets [& doublet]
+(defn doublets [& doublet]
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
         word2 (last doublet)]
@@ -49,12 +48,10 @@
     (apply doublets (flatten (cons head
               (list (first (sufficient-neighbors doublet)) word2)))))))
 
+#_(
 
-(clojure.tools.trace/dotrace [doublets sufficient-neighbors distance-from] (doublets "door" "lock"))
-
-(doublets "wheat" "bread")
-(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "bank" "loan"))
-
-(doublets "door" "lock")
-
-(sort (distance-from "lock") ["look" "bonk"])
+  (doublets "door" "lock")
+  (doublets "wheat" "bread")
+  (doublets "bank" "loan")
+  (doublets "door" "lock")
+)
