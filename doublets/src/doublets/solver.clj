@@ -19,18 +19,23 @@
                   (second letter-pair)))
           (partition 2 (interleave word1 word2)))))
 
+(defn ^:dynamic distance-from [target-word]
+  (comparator (fn [word1 word2]
+    (compare (distance target-word word1) (distance target-word word2)))))
+
+(sort (distance-from "food") ["bool" "foud" "fooo"])
+
 (defn ^:dynamic sufficient-neighbors [doublet]
-  "Neighbors that is closer to word2"
+  "Neighbors ordered by closeness to word2"
   (let [head  (take ((comp dec count) doublet) doublet)
         word1 (last head)
         word2 (last doublet)]
-   (filter
+   (sort (distance-from word2) (filter
     (fn [candidate]
       (and
-       ;(>= (distance word1 word2) (distance word2 candidate))
        (= 1 (distance word1 candidate))
        (not (some #{candidate} head))))
-      (words-of-size (count word1)))))
+      (words-of-size (count word1))))))
 
 (defn ^:dynamic doublets [& doublet]
   (let [head  (take ((comp dec count) doublet) doublet)
@@ -45,7 +50,15 @@
     (apply doublets (flatten (cons head
               (list (first (sufficient-neighbors doublet)) word2)))))))
 
-(clojure.tools.trace/dotrace [doublets] (doublets "head" "tall"))
-(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "door" "lock"))
+;(clojure.tools.trace/dotrace [doublets] (doublets "head" "tall"))
+(clojure.tools.trace/dotrace [doublets sufficient-neighbors distance-from] (doublets "door" "lock"))
 
-(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "wheat" "bread"))
+;(doublets "wheat" "bread")
+(clojure.tools.trace/dotrace [doublets sufficient-neighbors] (doublets "bank" "loan"))
+
+(doublets "door" "lock")
+(clojure.tools.trace/dotrace [distance-from] (sufficient-neighbors ["door" "boor" "book" "lock"]))
+(distance "lock" "bonk")
+(distance "lock" "look")
+
+(sort (distance-from "lock") ["bonk" "look"])
