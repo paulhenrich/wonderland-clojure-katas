@@ -2,14 +2,15 @@
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]))
 
-(def words (-> "words.edn"
-               (io/resource)
+(def words (-> "/usr/share/dict/words"
                (slurp)
-               (read-string)))
+               (clojure.string/split-lines)))
 
+(def de-rigueur-words-used-in-good-society
+  (filter (fn [w] (re-matches #"[a-z]+" w)) words))
 
 (defn words-of-size [size]
-  (filter (fn [word] (= (count word) size)) words))
+  (filter (fn [word] (= (count word) size)) de-rigueur-words-used-in-good-society))
 
 (defn distance [word1 word2]
   (count (filter
@@ -48,10 +49,10 @@
     (apply doublets (flatten (cons head
               (list (first (sufficient-neighbors doublet)) word2)))))))
 
-#_(
 
-  (doublets "door" "lock")
-  (doublets "wheat" "bread")
-  (doublets "bank" "loan")
-  (doublets "door" "lock")
-)
+(doublets "door" "lock")
+(doublets "wheat" "bread")
+(doublets "bank" "loan")
+(doublets "door" "lock")
+
+(doublets "mouth" "smile")
